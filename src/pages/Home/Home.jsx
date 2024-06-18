@@ -1,47 +1,71 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import "./Home.css";
 import Navbar from '../../components/Navbar/Navbar';
-import hero_banner from '../../assets/hero_banner.jpg'
-import hero_title from '../../assets/hero_title.png'
-import play_icon from '../../assets/play_icon.png'
-import info_icon from '../../assets/info_icon.png'
+import hero_banner from '../../assets/hero_banner.jpg';
+import hero_title from '../../assets/hero_title.png';
+import play_icon from '../../assets/play_icon.png';
+import info_icon from '../../assets/info_icon.png';
 import TitleCards from '../../components/TitleCards/TitleCards';
 import Footer from '../../components/Footer/Footer';
 
 const Home = () => {
-  return (
-    
-      <div className="home">
-        <Navbar />
-        <div className="hero">
-          <img src={hero_banner} alt="" className='banner-img' />
-          <div className="hero-caption">
-            <img src={hero_title} alt="" className='caption-img'/>
-            <p>Discovering his ties to a secret ancient order, a young man living in modern 
-              Istanbul embarks on a quest to save the city from an immortal enemy.</p>
-              <div className="hero-btns">
-                <button className='btn'>
-                  <img src={play_icon} alt="" />
-                  Play
-                </button>
-                <button className='btn dark-btn'>
-                  <img src={info_icon} alt="" />
-                  More Info
-                </button>
-              </div>
-              <TitleCards />
-          </div>
-        </div>
-        <div className="more-cards">
-       
-          <TitleCards title = {"Only on Netflix"} category={"popular"}/>
-          <TitleCards title = {"Upcoming"} category={"upcoming"}/>
-          <TitleCards title = {"Top picks for you"} category={"top_rated"}/>
-        </div>
-        <Footer />
-      </div>
-    
-  )
-}
+  const [movies, setMovies] = useState([]);
+  const API_KEY = '35cd516f'; 
 
-export default Home
+  useEffect(() => {
+    fetchMovies();
+  }, []);
+
+  const fetchMovies = async () => {
+    const movieIds = ["tt0111161", "tt0068646", "tt0071562", "tt0468569", "tt0050083"];  // Example IMDb IDs
+    const movieData = await Promise.all(movieIds.map(id => fetchMovieData(id)));
+    setMovies(movieData);
+  };
+
+  const fetchMovieData = async (id) => {
+    const response = await fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`);
+    const data = await response.json();
+    return {
+      title: data.Title,
+      poster: `http://img.omdbapi.com/?apikey=${API_KEY}&i=${id}`
+    };
+  };
+
+  // Uncomment the line below to debug the fetched movie data
+  // console.log(movies);
+
+  return (
+    <div className="home">
+      <Navbar />
+      <div className="hero">
+        <img src={hero_banner} alt="" className='banner-img' />
+        <div className="hero-caption">
+          <img src={hero_title} alt="" className='caption-img'/>
+          <p>Discovering his ties to a secret ancient order, a young man living in modern 
+            Istanbul embarks on a quest to save the city from an immortal enemy.</p>
+          <div className="hero-btns">
+            <button className='btn'>
+              <img src={play_icon} alt="" />
+              Play
+            </button>
+            <button className='btn dark-btn'>
+              <img src={info_icon} alt="" />
+              More Info
+            </button>
+          </div>
+          <TitleCards />
+        </div>
+      </div>
+      <div className="more-cards">
+       
+        <TitleCards title={"Only on Netflix"} category={"popular"}/>
+        <TitleCards title={"Upcoming"} category={"upcoming"}/>
+        <TitleCards title={"Top picks for you"} category={"top_rated"}/>
+        <TitleCards title={"Top picks for you"} category={"now_playing"}/>
+      </div>
+      <Footer />
+    </div>
+  );
+};
+
+export default Home;

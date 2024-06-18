@@ -72,8 +72,24 @@
 
 
 
+@media (max-width : 1024px) {
+    .hero-caption .title-cards {
+        display: none;
+    }
+    .hero-btns {
+        margin-top: 30px;
+    }
+}
 
 
+@media (max-width : 800px) {
+    .hero-caption {
+        padding-left: 4%;
+    }
+    .caption-img p {
+        font-size: 12px;
+    }
+}
 
 
 
